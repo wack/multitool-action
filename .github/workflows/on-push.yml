@@ -11,8 +11,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Test MultiTool Action
-        uses: wack/multitool-action@${{ github.sha }}
+
+      # Test whether the Action installs correctly.
+      - name: Install MultiTool via Action
+        uses: "./"
         with:
-          input-string: "test input"
+          install-only: true
+          version: "v0.3.0"
+
+      - name: "Test CLI is installed"
+        run: "which multi"
+
+      - name: "Test CLI help works"
+        run: "multi -h"
+
+      - name: "Test CLI version matches"
+        run: |
+          if [ $(multi version) = "v0.3.0" ]; then
+            echo "Version is correct."
+          else
+            echo "Version is incorrect."
+            exit 1
+          fi
+       
+      # Test whether the Action logs in correctly.
+      - name: Login
+        uses: "./"
+        with:
+          email: ${{ secrets.MULTITOOL_QA_EMAIL }}
+          password: ${{ secrets.MULTITOOL_QA_PASSWORD }}
+          dry-run: true
+          cache-binary: false

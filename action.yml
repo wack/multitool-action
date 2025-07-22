@@ -1,10 +1,37 @@
 name: 'MultiTool'
+# TODO: Add an action description.
+# TODO: Run Taplo YAML checker over this file.
+# TODO: Change single quotes to double quotes
 description: ''
 
 inputs:
-  input-string:
-    description: 'Input string'
-    required: true
+  version:
+    description: 'Version string (e.g. v0.3.0). If none provided, defaults to latest'
+    required: false
+    default: "latest"
+
+  install-only:
+    description: "Whether to install the CLI and then exit"
+    required: false
+    default: false
+
+  dry-run:
+    description: "Skips running `multi run`. Useful for testing login credentials."
+    required: false
+    default: false
+
+  email:
+    description: "An email address to use when logging in."
+    required: false
+
+  password:
+    description: "The password to use when logging in. NB: Pass this as an environment secret."
+    required: false
+
+  cache-binary:
+    description: "When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs"
+    required: false
+    default: true
 
 outputs:
   output-string:
@@ -14,8 +41,20 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'MultiTool Step'
-      id: multitool-step
+    - name: Install the MultiTool CLI
+      uses: jaxxstorm/action-install-gh-release@v2.1.0
+      with: # Grab the latest version
+        repo: wack/multitool
+        tag: ${{ inputs.version }}
+        cache: ${{ inputs.cache-binary && 'enable' }}
+
+    - name: Login
       shell: bash
-      run: |
-        echo "result=${{ inputs.input-string }}" >> $GITHUB_OUTPUT
+      if: ${{ !inputs.install-only }}
+      run: "multi login --enable-colors=always --email=${{ inputs.email }} --password=${{ inputs.password }}"
+
+    - name: Multi Run
+      shell: bash
+      if: ${{ !(inputs.install-only || inputs.dry-run) }}
+      run: "multi run --enable-colors=always"
+
