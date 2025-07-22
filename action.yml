@@ -1,0 +1,21 @@
+name: 'MultiTool'
+description: ''
+
+inputs:
+  input-string:
+    description: 'Input string'
+    required: true
+
+outputs:
+  output-string:
+    description: 'Output string'
+    value: '${{ steps.multitool-step.outputs.result }}'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'MultiTool Step'
+      id: multitool-step
+      shell: bash
+      run: |
+        echo "result=${{ inputs.input-string }}" >> $GITHUB_OUTPUT
