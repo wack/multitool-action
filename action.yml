@@ -15,12 +15,12 @@ inputs:
   install-only:
     description: "Whether to install the CLI and then exit"
     required: false
-    default: false
+    default: "false"
 
   dry-run:
     description: "Skips running `multi run`. Useful for testing login credentials."
     required: false
-    default: false
+    default: "false"
 
   email:
     description: "An email address to use when logging in."
@@ -33,7 +33,7 @@ inputs:
   cache-binary:
     description: "When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs"
     required: false
-    default: true
+    default: "true"
 
 outputs:
   output-string:
@@ -52,10 +52,10 @@ runs:
 
     - name: Login
       shell: bash
-      if: ${{ inputs.install-only == "false" }}
+      if: ${{ inputs.install-only != 'true' }}
       run: "multi login --enable-colors=always --email=${{ inputs.email }} --password=${{ inputs.password }}"
 
     - name: Run
       shell: bash
-      if: ${{ !(inputs.install-only || inputs.dry-run) }}
+      if: ${{ inputs.install-only != 'true' && inputs.dry-run != 'true' }}
       run: "multi run --enable-colors=always"

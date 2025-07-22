@@ -16,7 +16,7 @@ jobs:
       - name: Install MultiTool via Action
         uses: "./"
         with:
-          # install-only: true
+          install-only: "true"
           version: "v0.3.0"
 
       - name: "Test CLI is installed"
@@ -40,5 +40,5 @@ jobs:
         with:
           email: ${{ secrets.MULTITOOL_QA_EMAIL }}
           password: ${{ secrets.MULTITOOL_QA_PASSWORD }}
-          dry-run: true
-          cache-binary: false
+          dry-run: "true"
+          cache-binary: "false"
