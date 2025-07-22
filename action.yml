@@ -52,7 +52,7 @@ runs:
 
     - name: Login
       shell: bash
-      if: ${{ !inputs.install-only }}
+      if: ${{ inputs.install-only == "false" }}
       run: "multi login --enable-colors=always --email=${{ inputs.email }} --password=${{ inputs.password }}"
 
     - name: Run
