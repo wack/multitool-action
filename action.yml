@@ -1,24 +1,26 @@
-name: 'MultiTool'
-# TODO: Add an action description.
+name: "MultiTool-CLI"
 # TODO: Run Taplo YAML checker over this file.
-# TODO: Change single quotes to double quotes
-description: ''
+description: "Install and Run the MultiTool CLI"
+branding:
+  icon: "upload"
+  color: "black"
+
 
 inputs:
   version:
-    description: 'Version string (e.g. v0.3.0). If none provided, defaults to latest'
+    description: "Version string (e.g. v0.3.0). If none provided, defaults to latest"
     required: false
     default: "latest"
 
   install-only:
     description: "Whether to install the CLI and then exit"
     required: false
-    default: false
+    default: "false"
 
   dry-run:
     description: "Skips running `multi run`. Useful for testing login credentials."
     required: false
-    default: false
+    default: "false"
 
   email:
     description: "An email address to use when logging in."
@@ -31,7 +33,7 @@ inputs:
   cache-binary:
     description: "When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs"
     required: false
-    default: true
+    default: "true"
 
 outputs:
   output-string:
@@ -53,7 +55,7 @@ runs:
       if: ${{ !inputs.install-only }}
       run: "multi login --enable-colors=always --email=${{ inputs.email }} --password=${{ inputs.password }}"
 
-    - name: Multi Run
+    - name: Run
       shell: bash
       if: ${{ !(inputs.install-only || inputs.dry-run) }}
       run: "multi run --enable-colors=always"
