@@ -13,6 +13,6 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Test MultiTool Action
-        uses: wack/multitool-action@${{ github.sha }}
+        uses: "wack/multitool-action@${{ env.GITHUB_SHA }}"
         with:
           input-string: "test input"
