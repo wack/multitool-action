@@ -16,7 +16,7 @@ jobs:
       - name: Install MultiTool via Action
         uses: "./"
         with:
-          install-only: true
+          # install-only: true
           version: "v0.3.0"
 
       - name: "Test CLI is installed"
