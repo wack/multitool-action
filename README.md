@@ -9,8 +9,9 @@ A GitHub Action to install and run the MultiTool CLI.
 | `install-only` | Whether to only install the CLI and then exit | No | `false` |
 | `dry-run` | Skips running `multi run`. Useful for testing login credentials. | No | `false` |
 | `cache-binary` | When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs | No | `true` |
-| `email` | An email address to use when logging in. | No | - |
-| `password` | The password to use when logging in. It is recommended to pass this as an environment secret. | No | - |
+| `email` | An email address to use when logging in. | No |  |
+| `password` | The password to use when logging in. It is recommended to pass this as an environment secret. | No |  |
+|  `working-directory` | The working directory to run the `multi run` command in. Defaults to the root of the repository. | No | $PWD
 
 ## Examples
 

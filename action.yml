@@ -35,6 +35,11 @@ inputs:
     required: false
     default: "true"
 
+  working-directory:
+    description: "The working directory to run the `multi run` command in. Defaults to the root of the repository."
+    required: false
+    default: "."
+
 outputs:
   output-string:
     description: 'Output string'
@@ -57,5 +62,6 @@ runs:
 
     - name: Run
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       if: ${{ inputs.install-only != 'true' && inputs.dry-run != 'true' }}
       run: "multi run --enable-colors=always"
