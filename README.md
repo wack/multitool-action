@@ -6,6 +6,7 @@ A GitHub Action to install and run the MultiTool CLI.
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
 | `version` | Version string (e.g. v0.3.0). If none provided, defaults to latest | No | `latest` |
+| `force` | Boolean. Whether to apply the `--force` flag, which skips canarying and immediately deploys the app with 100% traffic. | No | `false` |
 | `install-only` | Whether to only install the CLI and then exit | No | `false` |
 | `dry-run` | Skips running `multi run`. Useful for testing login credentials. | No | `false` |
 | `cache-binary` | When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs | No | `true` |
