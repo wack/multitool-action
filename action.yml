@@ -6,7 +6,7 @@ branding:
 
 inputs:
   version:
-    description: "Version string (e.g. v0.6.0). If none provided, defaults to latest"
+    description: "Version string (e.g. v0.5.0). If none provided, defaults to latest"
     required: false
     default: "latest"
 

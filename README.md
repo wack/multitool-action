@@ -13,7 +13,7 @@ A GitHub Action that installs the [MultiTool CLI](https://github.com/wack/multit
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `version` | Version string (e.g. `v0.6.0`). If none provided, defaults to the latest release. | No | `latest` |
+| `version` | Version string (e.g. `v0.5.0`). If none provided, defaults to the latest release. | No | `latest` |
 | `install-only` | When `true`, install the CLI and then exit without running `multi check`. | No | `false` |
 | `cache-binary` | When enabled (default), the `multi` binary is added to the Actions cache and reused between runs. | No | `true` |
 | `directory` | The directory to recursively scan for `CHECKS.md` files. | No | `.` |
@@ -69,7 +69,7 @@ Install the CLI without running any checks — useful when you want to invoke `m
   uses: wack/multitool-action@v1
   with:
     install-only: "true"
-    version: "v0.6.0"
+    version: "v0.5.0"
 ```
 
 ### Select a provider, model, and effort
