@@ -1,72 +1,85 @@
 name: "MultiTool-CLI"
-# TODO: Run Taplo YAML checker over this file.
-description: "Install and Run the MultiTool CLI"
+description: "Install and run the MultiTool CLI to validate your repository's requirements with `multi check`"
 branding:
-  icon: "upload"
+  icon: "check-circle"
   color: "black"
-
 
 inputs:
   version:
-    description: "Version string (e.g. v0.3.0). If none provided, defaults to latest"
+    description: "Version string (e.g. v0.5.0). If none provided, defaults to latest"
     required: false
     default: "latest"
 
   install-only:
-    description: "Whether to install the CLI and then exit"
+    description: "When 'true', install the CLI and then exit without running `multi check`"
     required: false
     default: "false"
-
-  dry-run:
-    description: "Skips running `multi run`. Useful for testing login credentials."
-    required: false
-    default: "false"
-
-  email:
-    description: "An email address to use when logging in."
-    required: false
-
-  password:
-    description: "The password to use when logging in. NB: Pass this as an environment secret."
-    required: false
 
   cache-binary:
     description: "When enabled (default), the `multi` binary will be added to the Actions cache and reused between runs"
     required: false
     default: "true"
 
-  working-directory:
-    description: "The working directory to run the `multi run` command in. Defaults to the root of the repository."
+  directory:
+    description: "The directory to recursively scan for `CHECKS.md` files. Defaults to the root of the repository."
     required: false
     default: "."
 
-  force:
-    description: "Whether to force the operation. Passed as --force flag to multi run command."
+  provider:
+    description: "The model provider to use for checks: 'anthropic', 'openai', or 'gemini'. When unset, resolved from env/config (defaults to 'anthropic')."
     required: false
-    default: "false"
+    default: ""
 
-outputs:
-  output-string:
-    description: 'Output string'
-    value: '${{ steps.multitool-step.outputs.result }}'
+  model:
+    description: "The concrete model ID to run (e.g. 'claude-sonnet-4-6'). Must be a known model for the selected provider. When unset, resolved from env/config."
+    required: false
+    default: ""
+
+  effort:
+    description: "The agent effort level: 'low', 'medium', or 'high'. When unset, resolved from env/config (defaults to 'low')."
+    required: false
+    default: ""
+
+  concurrency:
+    description: "Maximum number of checks to run concurrently (a positive integer). When unset, defaults to the runner's CPU core count."
+    required: false
+    default: ""
+
+  trace-archive:
+    description: "When set to a path, capture every agent check session and bundle the traces into this `.tar.gz` archive. Off by default."
+    required: false
+    default: ""
+
+  enable-colors:
+    description: "Whether to color the output: 'always', 'never', or 'auto'. Defaults to 'always' so CI logs stay readable."
+    required: false
+    default: "always"
+
+  log-level:
+    description: "The maximum log level: 'trace', 'debug', 'info', 'warn', 'error', or 'off'. When unset, defaults to the CLI's own default ('info')."
+    required: false
+    default: ""
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install the MultiTool CLI
       uses: jaxxstorm/action-install-gh-release@v2.1.0
-      with: # Grab the latest version
+      with:
         repo: wack/multitool
         tag: ${{ inputs.version }}
-        cache: ${{ inputs.cache-binary && 'enable' }}
+        cache: ${{ inputs.cache-binary == 'true' && 'enable' || '' }}
 
-    - name: Login
+    - name: Run checks
       shell: bash
       if: ${{ inputs.install-only != 'true' }}
-      run: "multi login --enable-colors=always --email='${{ inputs.email }}' --password='${{ inputs.password }}'"
-
-    - name: Run
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      if: ${{ inputs.install-only != 'true' && inputs.dry-run != 'true' }}
-      run: "multi run --enable-colors=always ${{ inputs.force == 'true' && '--force' || '' }}"
+      run: >-
+        multi check
+        --enable-colors=${{ inputs.enable-colors }}
+        ${{ inputs.log-level != '' && format('--log-level={0}', inputs.log-level) || '' }}
+        ${{ inputs.provider != '' && format('--provider={0}', inputs.provider) || '' }}
+        ${{ inputs.model != '' && format('--model={0}', inputs.model) || '' }}
+        ${{ inputs.effort != '' && format('--effort={0}', inputs.effort) || '' }}
+        ${{ inputs.concurrency != '' && format('--concurrency={0}', inputs.concurrency) || '' }}
+        ${{ inputs.trace-archive != '' && format('--trace-archive={0}', inputs.trace-archive) || '' }}
+        '${{ inputs.directory }}'
